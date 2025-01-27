@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+    :root {
+      --padding-inline-desktop: 24px;
+      --padding-inline-tablet: 24px;
+      --padding-inline-mobile: 24px;
+      --content-max-width: 115rem;
+      --breakout-max-width: 135rem;
+      --breakout-size: calc((var(--breakout-max-width) - var(--content-max-width)) / 2);
+    }
+  
+    html {
+      font-family: "AtiplaND", system-ui, sans-serif;
+    }
+}
+
+@layer components {
+    .global-main-grid-layout {
+      @apply grid grid-cols-mobile-layout md:grid-cols-tablet-layout xl:grid-cols-desktop-layout;
+    }
+}
+  
