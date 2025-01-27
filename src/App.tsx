@@ -1,4 +1,4 @@
-import EthPriceChart from "./components/EthPriceChart";
+import EthPriceChart from "./components/EthPriceChart/EthPriceChart";
 import Header from "./components/Header";
 
 function App() {

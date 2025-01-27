@@ -1,10 +1,3 @@
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../services/store";
-import { useEffect } from "react";
-import {
-  fetchCurrentEthPriceAsync,
-  fetchHistoricalEthPriceAsync,
-} from "../services/state/ethPriceSlice";
 import {
   Area,
   AreaChart,
@@ -13,22 +6,14 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
+import Button from "../Button";
+import TradeDialog from "../TradeDialog/TradeDialog";
+import { useTradeDialog } from "../TradeDialog/TradeDialog.hooks";
+import { useEthPrice } from "./EthPriceChart.hooks";
 
 function EthPriceChart() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { currentPrice, historicalDataFetched, historicalPrices, error } = useSelector(
-    (state: RootState) => state.ethPrice
-  );
-
-  useEffect(() => {
-    if (!historicalDataFetched) {
-      dispatch(fetchHistoricalEthPriceAsync());
-    }
-    const intervalId = setInterval(async () => {
-      dispatch(fetchCurrentEthPriceAsync());
-    }, 10000);
-    return () => clearInterval(intervalId);
-  }, [historicalDataFetched, dispatch]);
+  const { currentPrice, historicalPrices, error } = useEthPrice();
+  const {tradeDialogOpened, toggleDialog} = useTradeDialog();
 
   if (!historicalPrices) {
     return (
@@ -105,6 +90,10 @@ function EthPriceChart() {
           </AreaChart>
         </ResponsiveContainer>
       )}
+
+      <Button callback={toggleDialog} buttonText="Trade" customStyles="lg:max-w-[140px]"></Button>
+      
+      <TradeDialog isOpen={tradeDialogOpened} onClose={toggleDialog} />
     </div>
   );
 }

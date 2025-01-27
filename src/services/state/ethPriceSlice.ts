@@ -58,6 +58,10 @@ const ethPriceSlice = createSlice({
       })
       .addCase(fetchHistoricalEthPriceAsync.fulfilled, (state, action) => {
         state.historicalPrices = action.payload;
+
+        if (state.historicalPrices) {
+          state.currentPrice = state.historicalPrices[state.historicalPrices.length - 1].price
+        }
         state.historicalDataFetched = true;
       })
       .addCase(fetchHistoricalEthPriceAsync.rejected, (state, action) => {
