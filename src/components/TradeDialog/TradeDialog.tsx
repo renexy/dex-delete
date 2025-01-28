@@ -1,4 +1,6 @@
 import Button from "../Button";
+import Input from "../Input";
+import { useTradeDialog } from "./TradeDialog.hooks";
 
 interface TradeDialogProps {
   isOpen: boolean;
@@ -6,6 +8,13 @@ interface TradeDialogProps {
 }
 
 const TradeDialog: React.FC<TradeDialogProps> = ({ isOpen, onClose }) => {
+  const { updateInput } = useTradeDialog();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    updateInput(name as "eurAmount" | "ethAmount", value);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -18,35 +27,16 @@ const TradeDialog: React.FC<TradeDialogProps> = ({ isOpen, onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col gap-[12px] w-full">
-          <h2 className="font-semiboldtext-right cursor-pointer text-right">
+          <h2
+            className="font-semiboldtext-right cursor-pointer text-right"
+            onClick={onClose}
+          >
             X
           </h2>
-          <div className="relative">
-            <div className="flex items-center w-full h-[48px] bg-[#0000000A] rounded-[4px]">
-              <input
-                type="text"
-                className="flex-1 text-black bg-transparent pr-[10px] text-right focus:outline-none"
-                placeholder="Enter amount"
-              />
-              <span className="text-[#74CDDC] top-[1px] relative text-[12px] font-bold mr-[12px]">
-                EUR
-              </span>
-            </div>
-            <div className="absolute bottom-[8px] left-3 right-[46px] border-b border-[#0000003D]"></div>
-          </div>
-          <div className="relative">
-            <div className="flex items-center w-full h-[48px] bg-[#0000000A] rounded-[4px]">
-              <input
-                type="text"
-                className="flex-1 text-black bg-transparent pr-[10px] text-right focus:outline-none"
-                placeholder="Enter amount"
-              />
-              <span className="text-[#74CDDC] top-[1px] relative text-[12px] font-bold mr-[12px]">
-                BTC
-              </span>
-            </div>
-            <div className="absolute bottom-[8px] left-3 right-[46px] border-b border-[#0000003D]"></div>
-          </div>
+
+          <Input name="eurAmount" text="eur" onChange={handleInputChange} />
+          <Input name="ethAmount" text="eth" onChange={handleInputChange} />
+
           <div className="flex w-full items-center w-full gap-[24px] pt-[12px]">
             <Button
               callback={() => {
