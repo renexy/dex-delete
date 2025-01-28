@@ -6,7 +6,6 @@ Before starting, run
 npm install
 ```
 To start, use
-`tseslint.configs.recommended`
 ```js
 npm run dev
 ```
