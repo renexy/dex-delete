@@ -11,6 +11,7 @@ import TradeDialog from "../TradeDialog/TradeDialog";
 import { useTradeDialog } from "../TradeDialog/TradeDialog.hooks";
 import { useEthPrice } from "./EthPriceChart.hooks";
 import { usePortfolio } from "../../hooks/usePortfolio";
+import { formatEurBalance } from "../../utils/formatter";
 
 function EthPriceChart() {
   const { currentPrice, historicalPrices, error } = useEthPrice();
@@ -66,10 +67,7 @@ function EthPriceChart() {
       <div className="flex flex-col w-full justify-center items-center">
         <span className="text-[24px] font-semibold">ETH</span>
         <span className="text-[24px] font-semibold">
-          {new Intl.NumberFormat("en-GB", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }).format(currentPrice ?? 0)}{" "}
+          {formatEurBalance(currentPrice ?? 0)}{" "}
           €
         </span>
         <span className="text-[12px] font-[400]">
@@ -88,10 +86,7 @@ function EthPriceChart() {
                 : ""
             }`}
           >
-            {new Intl.NumberFormat("en-GB", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }).format(realizedPNL)}{" "}
+            {formatEurBalance(realizedPNL)}{" "}
             €
           </span>
         </span>

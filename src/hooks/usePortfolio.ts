@@ -4,7 +4,7 @@ import { updatePortfolio } from "../services/state/portfolioSlice";
 
 export const usePortfolio = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { realizedPNL, ethBalance, eurBalance, error } = useSelector((state: RootState) => state.portfolio);
+  const { realizedPNL, ethBalance, eurBalance, error, transactions } = useSelector((state: RootState) => state.portfolio);
 
   const handleBuy = (ethAmount: number, ethPrice: number) => {
     dispatch(updatePortfolio({ type: 'buy', amount: ethAmount, price: ethPrice }));
@@ -14,5 +14,5 @@ export const usePortfolio = () => {
     dispatch(updatePortfolio({ type: 'sell', amount: ethAmount, price: ethPrice }));
   };
 
-  return { realizedPNL, ethBalance, eurBalance, handleBuy, handleSell, error };
+  return { realizedPNL, ethBalance, eurBalance, handleBuy, handleSell, error, transactions };
 };

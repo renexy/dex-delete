@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface Transaction {
+export interface Transaction {
   type: "buy" | "sell";
   amount: number;
   price: number;

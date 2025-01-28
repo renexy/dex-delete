@@ -1,4 +1,5 @@
 import { usePortfolio } from "../hooks/usePortfolio";
+import { formatEthBalance, formatEurBalance } from "../utils/formatter";
 
 function Header() {
   const { ethBalance, eurBalance } = usePortfolio();
@@ -9,18 +10,12 @@ function Header() {
         <div className="flex flex-col text-[12px] h-[52px] text-right">
           <span>Available</span>
           <span>
-            {new Intl.NumberFormat("en-US", {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 8,
-            }).format(ethBalance)}{" "}
+            {formatEthBalance(ethBalance)}{" "}
             <span className="font-bold">ETH</span>
           </span>
           <span>
             {" "}
-            {new Intl.NumberFormat("en-GB", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }).format(eurBalance)}{" "}
+            {formatEurBalance(eurBalance)}{" "}
             <span className="font-bold">€</span>
           </span>
         </div>
