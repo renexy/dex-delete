@@ -10,10 +10,12 @@ import Button from "../Button";
 import TradeDialog from "../TradeDialog/TradeDialog";
 import { useTradeDialog } from "../TradeDialog/TradeDialog.hooks";
 import { useEthPrice } from "./EthPriceChart.hooks";
+import { usePortfolio } from "../../hooks/usePortfolio";
 
 function EthPriceChart() {
   const { currentPrice, historicalPrices, error } = useEthPrice();
-  const {tradeDialogOpened, toggleDialog} = useTradeDialog();
+  const { realizedPNL } = usePortfolio();
+  const { tradeDialogOpened, toggleDialog } = useTradeDialog();
 
   if (!historicalPrices) {
     return (
@@ -43,8 +45,16 @@ function EthPriceChart() {
 
     return (
       <div className="flex gap-[4px] justify-center items-center ">
-        {previousData && <span className="bg-[#B9D3D3] rounded-[4px] p-[2px] text-white">Prev close</span>}
-        {previousData && <span className="bg-[#B9D3D3] rounded-[4px] p-[2px] text-white">{Math.round(previousData)}</span>}
+        {previousData && (
+          <span className="bg-[#B9D3D3] rounded-[4px] p-[2px] text-white">
+            Prev close
+          </span>
+        )}
+        {previousData && (
+          <span className="bg-[#B9D3D3] rounded-[4px] p-[2px] text-white">
+            {Math.round(previousData)}
+          </span>
+        )}
       </div>
     );
   }
@@ -53,7 +63,39 @@ function EthPriceChart() {
     <div className="col-content w-full items-center justify-center flex flex-col px-[24px] gap-[16px]">
       {error && <span>Error occured</span>}
 
-      <span>{currentPrice}</span>
+      <div className="flex flex-col w-full justify-center items-center">
+        <span className="text-[24px] font-semibold">ETH</span>
+        <span className="text-[24px] font-semibold">
+          {new Intl.NumberFormat("en-GB", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(currentPrice ?? 0)}{" "}
+          €
+        </span>
+        <span className="text-[12px] font-[400]">
+          PnL: {" "}
+          {realizedPNL > 0 ? (
+            <span className="text-green-500 font-bold">+</span>
+          ) : (
+            <></>
+          )}
+          <span
+            className={`${
+              realizedPNL > 0
+                ? "text-green-500 font-bold"
+                : realizedPNL < 0
+                ? "text-red-500 font-bold"
+                : ""
+            }`}
+          >
+            {new Intl.NumberFormat("en-GB", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(realizedPNL)}{" "}
+            €
+          </span>
+        </span>
+      </div>
 
       {historicalPrices && (
         <ResponsiveContainer width="100%" height={500}>
@@ -78,6 +120,36 @@ function EthPriceChart() {
               orientation="right"
               tickLine={false}
               axisLine={false}
+              tick={({ x, y, payload }) => {
+                const latestPrice =
+                  historicalPrices[historicalPrices.length - 1]?.price;
+
+                const isClosestTick =
+                  Math.abs(payload.value - latestPrice) <= 20;
+
+                return (
+                  <g transform={`translate(${x},${y})`}>
+                    {isClosestTick && (
+                      <rect
+                        y={-16}
+                        width={40}
+                        height={24}
+                        rx={4}
+                        fill="#4caf50"
+                        x={0}
+                      />
+                    )}
+                    <text
+                      fill={isClosestTick ? "#fff" : "#4caf50"}
+                      textAnchor="middle"
+                      y={2}
+                      x={20}
+                    >
+                      {Math.round(payload.value)}
+                    </text>
+                  </g>
+                );
+              }}
             />
             <Tooltip content={<CustomTooltip />} />
 
@@ -92,8 +164,12 @@ function EthPriceChart() {
         </ResponsiveContainer>
       )}
 
-      <Button callback={toggleDialog} buttonText="Trade" customStyles="lg:max-w-[140px]"></Button>
-      
+      <Button
+        callback={toggleDialog}
+        buttonText="Trade"
+        customStyles="lg:max-w-[140px]"
+      ></Button>
+
       <TradeDialog isOpen={tradeDialogOpened} onClose={toggleDialog} />
     </div>
   );

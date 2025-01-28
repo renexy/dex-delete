@@ -12,6 +12,7 @@ interface PortfolioState {
   eurBalance: number;
   realizedPNL: number;
   transactions: Transaction[];
+  error?: string;
 }
 
 interface UpdatePortfolioAction {
@@ -31,11 +32,12 @@ const portfolioSlice = createSlice({
   reducers: {
     updatePortfolio: (state, action: UpdatePortfolioAction) => {
       const { type, amount, price } = action.payload;
+      state.error = '';
 
       if (type === "buy") {
         const totalCost = amount * price;
         if (state.eurBalance < totalCost) {
-          console.error("Insufficient EUR balance");
+          state.error = "Insufficient EUR balance";
           return;
         }
         state.eurBalance -= totalCost;
@@ -43,7 +45,7 @@ const portfolioSlice = createSlice({
         state.transactions.push({ type, amount, price, datetime: new Date().toISOString() });
       } else if (type === "sell") {
         if (state.ethBalance < amount) {
-          console.error("Insufficient ETH balance");
+          state.error = "Insufficient ETH balance";
           return;
         }
 

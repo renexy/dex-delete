@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../hooks/usePortfolio";
 import Button from "../Button";
 import Input from "../Input";
 import { useTradeDialog } from "./TradeDialog.hooks";
@@ -8,12 +9,24 @@ interface TradeDialogProps {
 }
 
 const TradeDialog: React.FC<TradeDialogProps> = ({ isOpen, onClose }) => {
-  const { updateInput } = useTradeDialog();
+  const { inputs, updateInput } = useTradeDialog();
+  const { handleBuy, handleSell, error } = usePortfolio();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     updateInput(name as "eurAmount" | "ethAmount", value);
   };
+
+  const handleTrade = (type: 'buy' | 'sell') => {
+    switch (type) {
+      case 'buy': 
+        handleBuy(+inputs.ethAmount, +inputs.eurAmount)
+        break;
+      default:
+        handleSell(+inputs.ethAmount, + inputs.eurAmount)
+        break;
+    }
+  }
 
   if (!isOpen) return null;
 
@@ -37,17 +50,15 @@ const TradeDialog: React.FC<TradeDialogProps> = ({ isOpen, onClose }) => {
           <Input name="eurAmount" text="eur" onChange={handleInputChange} />
           <Input name="ethAmount" text="eth" onChange={handleInputChange} />
 
+          {error && <p className="text-red-500 text-center">{error}</p>}
+
           <div className="flex w-full items-center w-full gap-[24px] pt-[12px]">
             <Button
-              callback={() => {
-                console.log("test");
-              }}
+              callback={() => handleTrade('buy')}
               buttonText="Buy"
             ></Button>
             <Button
-              callback={() => {
-                console.log("test");
-              }}
+              callback={() => handleTrade('sell')}
               buttonText="Sell"
             ></Button>
           </div>
