@@ -42,8 +42,9 @@ function EthPriceChart() {
     const previousData = currentData.previousClosePrice ?? null;
 
     return (
-      <div className="TODO">
-        {previousData && <p>{`Prev close: ${Math.round(previousData)}`}</p>}
+      <div className="flex gap-[4px] justify-center items-center ">
+        {previousData && <span className="bg-[#B9D3D3] rounded-[4px] p-[2px] text-white">Prev close</span>}
+        {previousData && <span className="bg-[#B9D3D3] rounded-[4px] p-[2px] text-white">{Math.round(previousData)}</span>}
       </div>
     );
   }
