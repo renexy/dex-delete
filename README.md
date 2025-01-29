@@ -9,3 +9,10 @@ To start, use
 ```js
 npm run dev
 ```
+
+
+To run tests, use
+
+```js
+npx jest
+```
